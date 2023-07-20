@@ -1,0 +1,93 @@
+<!--
+ * @Author: wangcy
+ * @Date: 2022-05-15 18:14:42
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <style>
+        .edit-box{
+            width: 300px;
+            height: 200px;
+            background: pink;
+            border-radius: 5px;
+            padding: 5px;
+            box-sizing: border-box;
+            font-size: 13px;
+        }
+        .edit-box:focus{
+            border: none;
+            outline: none;
+        }
+        span{
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="edit-box" ref="editInput" v-html="content" contenteditable="true" @blur="blurEvent" @focus="focusEvent"></div>
+        <button @click="addEmpty">添加空位</button>
+    </div>
+
+    <script>
+        let vm  = new Vue({
+            el: "#app",
+            data(){
+                return {
+                    isFocus: false,
+                    contentText: "",
+                    contentHtml: "",
+                }
+            },
+            computed: {
+                content(){
+                    let str
+                    if(this.isFocus){
+                        str = this.contentText
+                    }else{
+                        str = this.contentHtml
+                    }
+                    return str
+                }
+            },
+            methods: {
+                focusEvent(){
+                    this.contentText = this.$refs.editInput.innerText
+                    this.isFocus = true
+                },
+                blurEvent(event){
+                    this.contentText = this.$refs.editInput.innerText
+                    let html = this.handleContent(this.$refs.editInput.innerText)
+                    this.contentHtml = html
+                    this.isFocus = false
+                },
+                handleContent(str){
+                    let i = 0
+                    // /\%([^(\%|\%)]*)\%/g 全局查询%% 之间所有内容替换掉
+                    let newstr = str.replace(/\%([^(\%|\%)]*)\%/g, (item, index) => {
+                        i ++
+                        let string = `<span>%${i}%</span>`
+                        return string
+                    })
+                    return newstr
+                },
+                addEmpty(){
+                    let str = `${this.contentHtml}%%`
+                    let newStr = this.handleContent(str) 
+                    this.contentHtml = newStr
+                    this.$nextTick(()=>{
+                        this.contentText = this.$refs.editInput.innerText
+                    })
+                }
+            }
+        })
+    </script>
+</body>
+</html>

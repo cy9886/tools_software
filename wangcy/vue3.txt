@@ -1,0 +1,24 @@
+## Vue3基础学习
+
+### 一. 结构解析
+
+#### 在main.js中
+
+// 引入不是vue构造函数 引入一个名为createApp的工厂函数
+import { createApp } from 'vue'
+import App from './App.vue'
+
+createApp(App).mount('#app')
+
+#### 在app中
+
+vue3中模板结构可以没有根标签
+
+### 二、 常用Composition API 组合式api
+
+1. #### setup
+
+   - vue3中的一个新配置项，值为函数
+   - setup是所有组合式api的入口
+   - 组件中所用到的数据，方法等  均需在setup中
+
